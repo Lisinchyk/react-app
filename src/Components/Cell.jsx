@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Cell({row, store}) {
+export default function Cell({ row, handleClick, cellSiblingShow }) {
     let style;
     let cellItem = row.map(cell => {
         let styles = {
@@ -25,9 +25,9 @@ export default function Cell({row, store}) {
 
         return <div className='cell'
                     style={style}
-                    onClick={(event) => store.handleClick(row, event.target.id)}
-                    onMouseEnter={() => store.cellSiblingShow('MOUSE_ENTER', cell.amount)}
-                    onMouseLeave={() => store.cellSiblingShow('MOUSE_LEAVE')}
+                    onClick={(event) => handleClick(row, event.target.id)}
+                    onMouseEnter={() => cellSiblingShow('MOUSE_ENTER', cell.amount)}
+                    onMouseLeave={() => cellSiblingShow('MOUSE_LEAVE')}
                     key={cell.id}
                     id={cell.id}
         >{(cell.percent) ? `${cell.percent}%` : cell.amount}</div>

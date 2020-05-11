@@ -1,8 +1,8 @@
 import React from "react";
 
-function RowAverage({ store }) {
+function RowAverage({ getState,  getAverageColumns}) {
     let rowIndex = 0;
-    let AverageCell = store.getState()[0].map(() => <div className="cell cell-other" key={rowIndex}>{store.getAverageColumns(rowIndex++)}</div>);
+    let AverageCell = getState().matrix[0].map(() => <div className="cell cell-other" key={rowIndex}>{getAverageColumns(rowIndex++)}</div>);
 
     return (
         <div className="row row-average">

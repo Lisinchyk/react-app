@@ -9,13 +9,19 @@ class Cell {
 }
 
 let store = {
-    state: [],
+    state: {
+        matrix: [],
+        formValues: {
+            rowValue: '',
+            colValue: '',
+        }
+    },
 
     getState() {
         return this.state;
     },
-    setState(row, col) {
-        this.state = buildMatrix(row, col);
+    setState(objVal) {
+        this.state.matrix = buildMatrix(objVal.rowValue, objVal.colValue);
     },
     handleClick(row, id) {
         row.forEach(cell => {
@@ -26,13 +32,13 @@ let store = {
         });
     },
     addRow() {
-        let arr = this.state;
+        let arr = this.state.matrix;
         let row = [];
         let lastID = 0;
         let lastArr;
         let cellAmount = 3;
 
-        if (this.state.length !== 0) {
+        if (this.state.matrix.length !== 0) {
             lastArr = arr[arr.length-1];
             lastID = arr[arr.length-1][lastArr.length-1].id;
             cellAmount = lastArr.length;
@@ -42,20 +48,20 @@ let store = {
             row.push(new Cell(++lastID));
         }
 
-        this.state.push(row);
+        this.state.matrix.push(row);
         reRenderDOM();
     },
     deleteRow(rowId) {
-        store.getState().splice(rowId, 1);
+        store.getState().matrix.splice(rowId, 1);
         reRenderDOM();
     },
     getRowSum(rowIndex = 0) {
         let sum = 0;
-        this.state[rowIndex].map(item => sum+= item.amount);
+        this.state.matrix[rowIndex].map(item => sum+= item.amount);
         return sum;
     },
     getAverageColumns(col = 0) {
-        let arr = this.state;
+        let arr = this.state.matrix;
         let result;
         let sum = 0;
 
@@ -82,7 +88,7 @@ let store = {
         reRenderDOM();
     },
     cellSiblingShow(action, val) {
-        this.state.forEach(row => {
+        this.state.matrix.forEach(row => {
             if (action === 'MOUSE_ENTER') {
                 row.forEach(item => {
                     if (val - 100 <= item.amount && item.amount <= val + 100) {
@@ -93,10 +99,26 @@ let store = {
                 row.forEach(item => (item.style) ? delete item.style : '');
             }
         });
-        reRenderDOM();    }
+        reRenderDOM();    },
+    handleInputs(value, action) {
+    switch (action) {
+        case 'INPUT-ROW':
+            this.state.formValues.rowValue = value;
+            break;
+        case 'INPUT-COLUMN':
+            this.state.formValues.colValue = value;
+            break;
+        case 'SEND-INPUTS':
+            store.setState(this.state.formValues);
+            this.state.formValues = {
+                rowValue: '',
+                colValue: ''
+            }
+            break;
+    }
+    reRenderDOM();
+}
 };
-
-store.setState(4, 4);
 
 function setAmount(min = 100, max = 999) {
     return parseInt(Math.random() * (max - min) + min);
